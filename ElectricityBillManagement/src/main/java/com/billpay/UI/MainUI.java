@@ -51,13 +51,13 @@ public class MainUI {
 				case 1 : AdminUI.adminLogin(sc);
 					break;
 					
-				case 2 : 
+				case 2 : ConsumerUI.consumerLogin(sc);
 					break;
 					
 				case 3 : ConsumerUI.consumerRegistration(sc);
 					break;
 					
-				case 4 : 
+				case 4 : ConsumerUI.forgotPassword(sc);
 					break;
 					
 				case 0 : System.out.println("  "+ColorUI.BLACK_BOLD+ColorUI.TEAL_BACKGROUND+"***Thanks for visiting BillPay, keep visiting***"+ColorUI.RESET);

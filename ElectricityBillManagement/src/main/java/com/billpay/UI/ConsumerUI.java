@@ -5,13 +5,16 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Scanner;
 
+import com.billpay.DAO.ConsumerDaoImpl;
 import com.billpay.Entity.ConsumerSave;
 import com.billpay.Exception.InvalidInputException;
+import com.billpay.Exception.InvalidUsernameOrPasswordException;
 import com.billpay.Exception.NoRecordFoundException;
 import com.billpay.Exception.SomethingWentWrongException;
 import com.billpay.Service.ConsumerService;
 import com.billpay.Service.ConsumerServiceImpl;
 import com.billpay.colors.ColorUI;
+import com.billpay.DAO.*;
 
 
 
@@ -73,12 +76,16 @@ public static void consumerRegistration(Scanner sc) {
 		String mob=sc.nextLine();
 		
 		
-		
+		ConsumerSave con = new ConsumerSave(fName, lName, userName, email, password, address, mob);
 		ConsumerService conService = new ConsumerServiceImpl();
 		
 		try {
 			conService.registerConsumerData(fName, lName, userName, email, password, address, mob);
-			displayConsumerMenu();
+			try {
+				consumerMenu(sc, con);
+			} catch (InvalidInputException e) {
+				System.out.println(e.getMessage());
+			}
 		} catch (SomethingWentWrongException e) {
 			System.out.println(e.getMessage());
 		}
@@ -87,15 +94,15 @@ public static void consumerRegistration(Scanner sc) {
 
 
 
-public static void displayConsumerMenu() {
-	System.out.println();
-	System.out.println(ColorUI.BLUE_BOLD+"  ***ROLE OF CONSUMER : "+ColorUI.RESET);
-	System.out.println(ColorUI.BLACK_BOLD+"  Select 0 : To Log Out");
-	System.out.println("  Select 1 : To Pay Bills");
-	System.out.println("  Select 2 : To View transaction history.");
-	System.out.println("  Select 3 : To File a Complaint."+ColorUI.RESET);
-	System.out.println();
-}
+//public static void displayConsumerMenu() {
+//	System.out.println();
+//	System.out.println(ColorUI.BLUE_BOLD+"  ***ROLE OF CONSUMER : "+ColorUI.RESET);
+//	System.out.println(ColorUI.BLACK_BOLD+"  Select 0 : To Log Out");
+//	System.out.println("  Select 1 : To Pay Bills");
+//	System.out.println("  Select 2 : To View transaction history.");
+//	System.out.println("  Select 3 : To File a Complaint."+ColorUI.RESET);
+//	System.out.println();
+//}
 
 
 
@@ -103,7 +110,15 @@ public static void consumerMenu(Scanner sc,ConsumerSave consumer) throws Invalid
 	try {
 		int choice=0;
 		do {
-			displayConsumerMenu();
+
+			System.out.println();
+			System.out.println(ColorUI.BLUE_BOLD+"  ***ROLE OF CONSUMER : "+ColorUI.RESET);
+			System.out.println(ColorUI.BLACK_BOLD+"  Select 0 : To Log Out");
+			System.out.println("  Select 1 : To Pay Bills");
+			System.out.println("  Select 2 : To View transaction history.");
+			System.out.println("  Select 3 : To File a Complaint."+ColorUI.RESET);
+			System.out.println();
+
 			System.out.print(ColorUI.YELLOW_BOLD+"  Enter a selection from above : "+ColorUI.RESET);
 			choice=Integer.parseInt(sc.next());
 			System.out.println();
@@ -134,15 +149,6 @@ public static void consumerMenu(Scanner sc,ConsumerSave consumer) throws Invalid
 }
 
 
-
-public static void showAllPendingBills(Scanner sc,ConsumerSave consumer) {
-	
-	
-	
-	ConsumerService conService = new ConsumerServiceImpl();
-	
-	
-}
 
 
 
@@ -199,22 +205,47 @@ public static void viewTransactionHistory(Scanner sc,ConsumerSave consumer) {
 
 public static void forgotPassword(Scanner sc) {
 	
-		
+		sc.nextLine();
 		System.out.print(ColorUI.BLUE_BOLD+"  Enter Your ConsumerId : "+ColorUI.RESET);
 		String consId=sc.nextLine();
 		System.out.println();
+		
 		System.out.print(ColorUI.BLUE_BOLD+"  Enter Your old password : "+ColorUI.RESET);
 		String oldPass=sc.nextLine();
 		System.out.println();
 		
+		ConsumerDao cDao = new ConsumerDaoImpl();
 		
-		System.out.print(ColorUI.BLUE_BOLD+"  Enter New Password : "+ColorUI.RESET);
-		String pass=sc.nextLine();
-		System.out.println();
-		System.out.print(ColorUI.BLUE_BOLD+"  Confirm New Password : "+ColorUI.RESET);
-		String conPass=sc.nextLine();
-		
+		try {
 			
+			boolean result=cDao.verifySecurityCredentials(oldPass, consId);
+			
+			if(result) {
+				System.out.println();
+				System.out.print(ColorUI.BLUE_BOLD+"  Enter New Password : "+ColorUI.RESET);
+				String pass=sc.nextLine();
+				System.out.println();
+				
+				cDao.updatePassword(pass, consId);
+				System.out.println();
+				System.out.println(ColorUI.GREEN_BOLD+"  *** Password Updated Successfully ***"+ColorUI.RESET);
+				System.out.println();
+			}
+			else {
+				System.out.println();
+				System.out.println(ColorUI.RED_BOLD+"  *** Wrong credentials! ***"+ColorUI.RESET);
+				System.out.println();
+			}
+			
+		} catch (SomethingWentWrongException | InvalidUsernameOrPasswordException | NoRecordFoundException  e) {
+			System.out.println();
+			System.out.println(ColorUI.RED_BOLD+"  ***"+e.getMessage()+"***"+ColorUI.RESET);
+			System.out.println();
+		} catch (Exception e) {
+			System.out.println();
+			System.out.println(ColorUI.RED_BOLD+"  ***"+e.getMessage()+"***"+ColorUI.RESET);
+			System.out.println();
+		}
 			
 }
 

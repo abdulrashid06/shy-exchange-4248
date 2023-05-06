@@ -1,4 +1,4 @@
-package com.billpay.Service;
+package com.billpay.DAO;
 
 import java.util.List;
 
@@ -6,7 +6,7 @@ import com.billpay.Entity.Bill;
 import com.billpay.Exception.NoRecordFoundException;
 import com.billpay.Exception.SomethingWentWrongException;
 
-public interface BillService {
+public interface BillDao {
 	
     public List<Bill> viewConsumerBillDataById(String conId) throws SomethingWentWrongException,NoRecordFoundException;
 	

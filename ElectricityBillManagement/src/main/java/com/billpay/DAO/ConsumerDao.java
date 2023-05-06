@@ -16,12 +16,14 @@ public interface ConsumerDao {
 	
 	public void registerConsumerData(ConsumerSave consumer)throws SomethingWentWrongException;
 	
+	public List<ConsumerSave> viewAllConsumerData() throws SomethingWentWrongException, NoRecordFoundException; 
+	
 //	public List<Bill> showAllPendingBillsData(String consId)throws SomethingWentWrongException,NoRecordFoundException; 
 	
-	public void payConsumerBill(String BillId) throws SomethingWentWrongException;
+	public void payConsumerBill(String BillId) throws SomethingWentWrongException, NoRecordFoundException;
 	
-	//public boolean verifySecurityCredentials(String ques, String ans, String consId)throws SomethingWentWrongException;
+	public boolean verifySecurityCredentials(String opass, String consId)throws SomethingWentWrongException, InvalidUsernameOrPasswordException, NoRecordFoundException;
 	
-	public void updatePassword(String pass, String consId)throws SomethingWentWrongException;
+	public void updatePassword(String pass, String consId)throws SomethingWentWrongException, NoRecordFoundException;
 
 }

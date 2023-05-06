@@ -13,9 +13,10 @@ import jakarta.persistence.NamedNativeQuery;
 
 @Entity
 public class Bill {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private String billId;
+	private int billId;
 	
 	private double prevReading;
 	private double currReading;
@@ -30,12 +31,29 @@ public class Bill {
 	private int isPaid;
 	
 	@ManyToOne
-    @JoinColumn(name = "consumer_id")
+//    @JoinColumn(name = "consumer_id")
 	private ConsumerSave consumer;
 
 	public Bill() {
 		super();
 		// TODO Auto-generated constructor stub
+	}
+	
+	
+	public Bill(double prevReading, double currReading, double unitConsumed, int unitRate, double totalAmount,
+			double tax, LocalDate startDate, LocalDate endDate, LocalDate billing_date, LocalDate dueDate, int isPaid) {
+		super();
+		this.prevReading = prevReading;
+		this.currReading = currReading;
+		this.unitConsumed = unitConsumed;
+		this.unitRate = unitRate;
+		this.totalAmount = totalAmount;
+		this.tax = tax;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.billing_date = billing_date;
+		this.dueDate = dueDate;
+		this.isPaid = isPaid;
 	}
 
 	public Bill(double prevReading, double currReading, double unitConsumed, int unitRate, double totalAmount,
@@ -56,11 +74,11 @@ public class Bill {
 		this.consumer = consumer;
 	}
 
-	public String getBillId() {
+	public int getBillId() {
 		return billId;
 	}
 
-	public void setBillId(String billId) {
+	public void setBillId(int billId) {
 		this.billId = billId;
 	}
 

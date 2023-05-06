@@ -25,11 +25,11 @@ public class ConsumerSave {
 	private String mobileNum;
 	private int isActive;
 	
-//	@OneToMany(mappedBy = "consumer")
-//	private Set<Bill> billList;
-//	
-//	@OneToMany(mappedBy = "consumer")
-//	private List<Transaction> transactionList;
+	@OneToMany(mappedBy = "consumer")
+	private List<Bill> billList;
+	
+	@OneToMany(mappedBy = "consumer")
+	private List<Transaction> transactionList;
 
 	
 	
@@ -40,20 +40,20 @@ public class ConsumerSave {
 
 
 
-//	public ConsumerSave(String firstName, String lastName, String userName, String email, String password, String address,
-//			String mobileNum, int isActive, Set<Bill> billList, List<Transaction> transactionList) {
-//		super();
-//		this.firstName = firstName;
-//		this.lastName = lastName;
-//		this.userName = userName;
-//		this.email = email;
-//		this.password = password;
-//		this.address = address;
-//		this.mobileNum = mobileNum;
-//		this.isActive = isActive;
-//		this.billList = billList;
-//		this.transactionList = transactionList;
-//	}
+	public ConsumerSave(String firstName, String lastName, String userName, String email, String password, String address,
+			String mobileNum, int isActive, List<Bill> billList, List<Transaction> transactionList) {
+		super();
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.userName = userName;
+		this.email = email;
+		this.password = password;
+		this.address = address;
+		this.mobileNum = mobileNum;
+		this.isActive = isActive;
+		this.billList = billList;
+		this.transactionList = transactionList;
+	}
 
 	public ConsumerSave(String firstName, String lastName, String userName, String email, String password,
 			String address, String mobileNum) {
@@ -141,21 +141,21 @@ public class ConsumerSave {
 		this.isActive = isActive;
 	}
 
-//	public Set<Bill> getBillList() {
-//		return billList;
-//	}
-//
-//	public void setBillList(Set<Bill> billList) {
-//		this.billList = billList;
-//	}
-//
-//	public List<Transaction> getTransactionList() {
-//		return transactionList;
-//	}
-//
-//	public void setTransactionList(List<Transaction> transactionList) {
-//		this.transactionList = transactionList;
-//	}
+	public List<Bill> getBillList() {
+		return billList;
+	}
+
+	public void setBillList(List<Bill> billList) {
+		this.billList = billList;
+	}
+
+	public List<Transaction> getTransactionList() {
+		return transactionList;
+	}
+
+	public void setTransactionList(List<Transaction> transactionList) {
+		this.transactionList = transactionList;
+	}
 
 	@Override
 	public String toString() {

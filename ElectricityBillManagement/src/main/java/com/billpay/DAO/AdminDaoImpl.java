@@ -12,6 +12,7 @@ import com.billpay.colors.ColorUI;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.PersistenceException;
 import jakarta.persistence.Query;
 
 public class AdminDaoImpl implements AdminDao {
@@ -34,108 +35,70 @@ public class AdminDaoImpl implements AdminDao {
 		}
 	}
 
+
+	
+	
 	@Override
-	public List<ConsumerSave> viewAllConsumerData() throws SomethingWentWrongException, NoRecordFoundException {
+	public String getNameById(String consumerId) throws SomethingWentWrongException, NoRecordFoundException {
 		
 		EntityManager em = EMFUtils.getAnEntityManager();
 		EntityTransaction et = em.getTransaction();
-		List<ConsumerSave> consumer = null;
+		ConsumerSave consumer = null;
 		
 		try {
 			
-			Query query = em.createQuery("SELECT c FROM ConsumerSave c WHERE c.isActive= :activeId");
-			query.setParameter("activeId", 0);
-			consumer = query.getResultList();
+			consumer = em.find(ConsumerSave.class, consumerId);
 			
 			if(consumer == null) {
-				throw new NoRecordFoundException("No record found in database");
+				throw new NoRecordFoundException("No record found with "+consumerId+" in database");
 			}
 			
-		} catch (Exception e) {
-			throw new SomethingWentWrongException("Unable to fetch data, please try again");
-		}
-		finally {
+			Query query = em.createQuery("SELECT c.firstName, c.lastName FROM ConsumerSave c WHERE c.consumerId= :consumerId");
+			query.setParameter("consumerId", consumerId);
+			
+			et.begin();
+			em.persist(query);
+			
+		} catch (PersistenceException e) {
+			throw new SomethingWentWrongException("Unable to delete consumer, please try again");
+		} finally {
+			et.commit();
 			em.close();
 		}
 		
-		return consumer;
-	}
-
-	
-	
-	@Override
-	public List<Bill> viewConsumerBillDataById(String conId) throws SomethingWentWrongException, NoRecordFoundException {
-		
-		EntityManager em = EMFUtils.getAnEntityManager();
-		List<Bill> bill = null;
-		
-		try {
-			
-			Query query = em.createQuery("SELECT b FROM Bill b WHERE b.consumerId= :conId");
-			query.setParameter("conId", conId);
-			bill = query.getResultList();
-			
-			if(bill == null) {
-				throw new NoRecordFoundException("No record found in database");
-			}
-			
-		} catch (IllegalArgumentException e) {
-			throw new SomethingWentWrongException("Unable to fetch data, please try again");
-		}finally {
-			em.close();
-		}
-		
-		return bill;
-	}
-
-	
-	
-	@Override
-	public List<Bill> viewAllBillsData() throws SomethingWentWrongException, NoRecordFoundException {
-		
-		EntityManager em = EMFUtils.getAnEntityManager();
-		List<Bill> bill = null;
-		
-		try {
-			
-			Query query = em.createQuery("SELECT b FROM Bill b");
-			
-		} catch (IllegalArgumentException e) {
-			throw new SomethingWentWrongException("Unable to fetch data, please try again");
-		}
-		
 		return null;
 	}
 
 	
-	
-	@Override
-	public String getNameById(String ConsumerId) throws SomethingWentWrongException, NoRecordFoundException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	
-	
-	@Override
-	public List<Bill> viewAllPaidBillsData() throws SomethingWentWrongException, NoRecordFoundException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	
-	
-	@Override
-	public List<Bill> viewAllPendingBillsData() throws SomethingWentWrongException, NoRecordFoundException {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
 	
 
 	@Override
 	public void deleteConsumerDataById(String consId) throws SomethingWentWrongException, NoRecordFoundException {
-		// TODO Auto-generated method stub
+		
+		EntityManager em = EMFUtils.getAnEntityManager();
+		EntityTransaction et = em.getTransaction();
+		ConsumerSave consumer = null;
+		
+		try {
+			
+			consumer = em.find(ConsumerSave.class, consId);
+			
+			if(consumer == null) {
+				throw new NoRecordFoundException("No record found with "+consId+" in database");
+			}
+			
+			consumer.setIsActive(1);
+			
+			et.begin();
+			em.merge(consumer);
+			et.commit();
+			
+		} catch (PersistenceException e) {
+			throw new SomethingWentWrongException("Unable to delete consumer, please try again");
+		} finally {	
+			em.close();
+		}
 		
 	}
 
@@ -143,15 +106,61 @@ public class AdminDaoImpl implements AdminDao {
 	
 	@Override
 	public int getLastBillId() throws SomethingWentWrongException, NoRecordFoundException {
-		// TODO Auto-generated method stub
-		return 0;
+		
+		EntityManager em = EMFUtils.getAnEntityManager();
+		int billId = 0;
+		
+		try {
+			
+			Query query = em.createQuery("SELECT b.billId FROM Bill b ORDER BY b.billId DESC LIMIT 1");
+			billId = (int) query.getSingleResult();
+			
+			if(billId == 0) {
+				throw new NoRecordFoundException("No record found in database");
+			}
+			
+		} catch (PersistenceException e) {
+			throw new SomethingWentWrongException("Unable to data, please try again");
+		} finally {
+			em.close();
+		}
+		
+		return billId;
 	}
 
 	
 	
 	@Override
-	public void generateBillData(Bill bill) throws SomethingWentWrongException {
-		// TODO Auto-generated method stub
+	public void generateBillData(int conId, Bill bill) throws SomethingWentWrongException, NoRecordFoundException {
+		
+		EntityManager em = EMFUtils.getAnEntityManager();
+		EntityTransaction et = em.getTransaction();
+		ConsumerSave consumer = null;
+		
+		try {
+			consumer = em.find(ConsumerSave.class, conId);
+			
+			if(consumer == null) {
+				throw new NoRecordFoundException("No record found in database");
+			}
+			
+			List<Bill> billList = consumer.getBillList();
+			billList.add(bill);
+			consumer.setBillList(billList);
+			bill.setConsumer(consumer);
+			
+			et.begin();
+			em.persist(bill);
+			em.persist(consumer);
+			et.commit();
+			
+		} catch (IllegalArgumentException e) {
+			throw new SomethingWentWrongException("Unable to fetch data, please try again");
+		}finally {
+			em.close();
+		}
+		
+		
 		
 	}
 	

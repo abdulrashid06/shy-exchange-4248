@@ -1,18 +1,27 @@
 package com.billpay.UI;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
+import org.hibernate.tool.schema.internal.ExceptionHandlerLoggedImpl;
+
 import com.billpay.DAO.AdminDao;
 import com.billpay.DAO.AdminDaoImpl;
+import com.billpay.DAO.BillDao;
+import com.billpay.DAO.BillDaoImpl;
 import com.billpay.Entity.Admin;
 import com.billpay.Entity.Bill;
 import com.billpay.Entity.ConsumerSave;
 import com.billpay.Exception.InvalidUsernameOrPasswordException;
 import com.billpay.Exception.NoRecordFoundException;
 import com.billpay.Exception.SomethingWentWrongException;
+import com.billpay.Service.BillService;
+import com.billpay.Service.BillServiceImpl;
+import com.billpay.Service.ConsumerService;
+import com.billpay.Service.ConsumerServiceImpl;
 import com.billpay.colors.ColorUI;
 
 
@@ -45,11 +54,11 @@ public class AdminUI {
 	
    public static void viewAllConsumers() {
 		
-	      AdminDao aDao = new AdminDaoImpl();
+	      ConsumerService cService = new ConsumerServiceImpl();
 	      List<ConsumerSave> conList = null;
 	      
 	      try {
-			conList = aDao.viewAllConsumerData();
+			conList = cService.viewAllConsumerData();
 			
 			if(conList != null) {
 				
@@ -57,10 +66,16 @@ public class AdminUI {
 					System.out.println(ColorUI.PURPLE + "ConsumerId : "+c.getConsumerId() + "  |  FirstName : "+c.getFirstName() + "  |  LastName : "+c.getLastName() 
 					+ "  |  UserName : "+c.getUserName() + "  |  Email : "+c.getEmail() + "  |  Address : "+c.getAddress() + "  |  Mobile : "+c.getMobileNum()+ColorUI.RESET);
 				});
+				System.out.println();
 			}
 		} catch (SomethingWentWrongException | NoRecordFoundException e) {
+			System.out.println();
 			System.out.println(ColorUI.RED_BOLD+"  xx> "+e.getMessage()+" <xx"+ColorUI.RESET);
-		} 
+		} catch(Exception ex) {
+			System.out.println();
+			System.out.println(ColorUI.RED_BOLD+"  xx> "+ex.getMessage()+" <xx"+ColorUI.RESET);
+		}
+	      System.out.println();
 	}
 
 	
@@ -88,14 +103,22 @@ public class AdminUI {
 		System.out.println();
 		
 		
-		AdminDao aDao = new AdminDaoImpl();
-		List<Bill> billList = null;
+		BillDao billService = new BillDaoImpl();
+		List<Bill> billList = new ArrayList<>();
 		try {
 			
-			billList = aDao.viewConsumerBillDataById(conId);
+			billList = billService.viewConsumerBillDataById(conId);
 			
 			billList.forEach(b -> {
-				System.out.println(ColorUI.ORANGE+"  ConsumerId : "+b.getConsumer());
+//				System.out.println(ColorUI.CYAN+"|  ConsumerId : "+b.getConsumer().getConsumerId() + "|  BillingId : "+b.getBillId()
+//				+ "|  Previous Reading : "+b.getPrevReading() + "|  Current Reading : "+b.getCurrReading() + "|  Units Consumed : "+b.getUnitConsumed()
+//				+ "|  Unit Rate : "+b.getUnitRate() + "|  Total Amount : "+b.getTotalAmount() + "|  tax : "+b.getTax() 
+//				+ "|  Bill Starting Date : "+b.getStartDate() + "|  Bill Ending Date : "+b.getEndDate() + "|  Billing Date : "+b.getBilling_date()
+//				+ "|  Last Payment Date : "+b.getDueDate() + "|  Payment Status : "+(b.getIsPaid() == 0 ? "Payment Is Pending  " : "Payment Is Paid"+ColorUI.RESET));
+				
+				
+				System.out.println(ColorUI.CYAN+"  ConsumerId : "+b.getConsumer().getConsumerId());
+				System.out.println("  Consumer Name : "+b.getConsumer().getFirstName() +" "+ b.getConsumer().getLastName());
 				System.out.println("  BillingId : "+b.getBillId());
 				System.out.println("  Previous Reading : "+b.getPrevReading());
 				System.out.println("  Current Reading : "+b.getCurrReading());
@@ -111,8 +134,13 @@ public class AdminUI {
 			});
 			
 		} catch (SomethingWentWrongException | NoRecordFoundException e) {
+			System.out.println();
 			System.out.println(ColorUI.RED_BOLD+"  xx> "+e.getMessage()+" <xx"+ColorUI.RESET);
-		} 
+		} catch (Exception ex) {
+			System.out.println();
+			System.out.println(ColorUI.RED_BOLD+"  xx> "+ex.getMessage()+" <xx"+ColorUI.RESET);
+		}
+		System.out.println();
 		
 	}
 
@@ -120,7 +148,49 @@ public class AdminUI {
 	
 	public static void viewAllBills() {
 		
+		BillService bService = new BillServiceImpl();
+		List<Bill> list = new ArrayList<>();
 		
+		try {
+			list = bService.viewAllBillsData();
+			list.forEach(b -> {
+				
+				String name = null;
+				
+				try {
+					name = b.getConsumer().getFirstName()+" "+ b.getConsumer().getLastName();
+				} catch ( Exception  e) {
+					System.out.println();
+					System.out.println(ColorUI.RED_BOLD+"  xx> "+e.getMessage()+" <xx"+ColorUI.RESET);
+				}
+				
+				System.out.println();
+				System.out.println(ColorUI.BLUE_BOLD+"  ***Bill for "+ColorUI.RESET+ColorUI.YELLOW_BOLD+name+ColorUI.RESET+ColorUI.BLACK+" :- "+ColorUI.RESET);
+//				System.out.println();
+				
+				System.out.println(ColorUI.ROSY_PINK+"  ConsumerId : "+b.getConsumer().getConsumerId());
+				System.out.println("  BillingId : "+b.getBillId());
+				System.out.println("  Previous Reading : "+b.getPrevReading());
+				System.out.println("  Current Reading : "+b.getCurrReading());
+				System.out.println("  Units Consumed : "+b.getUnitConsumed());
+				System.out.println("  Unit Rate : "+b.getUnitRate());
+				System.out.println("  Total Amount : "+b.getTotalAmount());
+				System.out.println("  tax : "+b.getTax());
+				System.out.println("  Bill Starting Date : "+b.getStartDate());
+				System.out.println("  Bill Ending Date : "+b.getEndDate());
+				System.out.println("  Billing Date : "+b.getBilling_date());
+				System.out.println("  Last Payment Date : "+b.getDueDate());
+				System.out.println("  Bill Payment Status : "+(b.getIsPaid() == 0 ? "Payment Is Pending" : "Payment Is Paid"+ColorUI.RESET));
+				
+			});
+		} catch (SomethingWentWrongException | NoRecordFoundException e) {
+			System.out.println();
+			System.out.println(ColorUI.RED_BOLD+"  xx> "+e.getMessage()+" <xx"+ColorUI.RESET);
+		} catch (Exception ex) {
+			System.out.println();
+			System.out.println(ColorUI.RED_BOLD+"  xx> "+ex.getMessage()+" <xx"+ColorUI.RESET);
+		}
+		System.out.println();
 		
 	}
 	
@@ -128,6 +198,49 @@ public class AdminUI {
 	
     public static void viewAllPaidBills() {
 		
+    	BillService bService = new BillServiceImpl();
+		List<Bill> list = new ArrayList<>();
+		
+		try {
+			list = bService.viewAllPaidBillsData();
+			list.forEach(b -> {
+				
+				String name = null;
+				
+				try {
+					name = b.getConsumer().getFirstName()+" "+ b.getConsumer().getLastName();
+				} catch ( Exception  e) {
+					System.out.println();
+					System.out.println(ColorUI.RED_BOLD+"  xx> "+e.getMessage()+" <xx"+ColorUI.RESET);
+				}
+				
+				System.out.println();
+				System.out.println(ColorUI.BLUE_BOLD+"  ***Bill for "+ColorUI.RESET+ColorUI.YELLOW_BOLD+name+ColorUI.RESET+ColorUI.BLACK+" :- "+ColorUI.RESET);
+//				System.out.println();
+				
+				System.out.println(ColorUI.BLACK_BOLD+"  ConsumerId : "+b.getConsumer().getConsumerId());
+				System.out.println("  BillingId : "+b.getBillId());
+				System.out.println("  Previous Reading : "+b.getPrevReading());
+				System.out.println("  Current Reading : "+b.getCurrReading());
+				System.out.println("  Units Consumed : "+b.getUnitConsumed());
+				System.out.println("  Unit Rate : "+b.getUnitRate());
+				System.out.println("  Total Amount : "+b.getTotalAmount());
+				System.out.println("  tax : "+b.getTax());
+				System.out.println("  Bill Starting Date : "+b.getStartDate());
+				System.out.println("  Bill Ending Date : "+b.getEndDate());
+				System.out.println("  Billing Date : "+b.getBilling_date());
+				System.out.println("  Last Payment Date : "+b.getDueDate());
+				System.out.println("  Bill Payment Status : "+(b.getIsPaid() == 0 ? "Payment Is Pending" : "Payment Is Paid"+ColorUI.RESET));
+				
+			});
+		} catch (SomethingWentWrongException | NoRecordFoundException e) {
+			System.out.println();
+			System.out.println(ColorUI.RED_BOLD+"  xx> "+e.getMessage()+" <xx"+ColorUI.RESET);
+		} catch (Exception ex) {
+			System.out.println();
+			System.out.println(ColorUI.RED_BOLD+"  xx> "+ex.getMessage()+" <xx"+ColorUI.RESET);
+		}
+		System.out.println();
 		
 		
     }
@@ -136,6 +249,49 @@ public class AdminUI {
     
     public static void viewAllPendingBills() {
 		
+    	BillService bService = new BillServiceImpl();
+		List<Bill> list = new ArrayList<>();
+		
+		try {
+			list = bService.viewAllPendingBillsData();
+			list.forEach(b -> {
+				
+				String name = null;
+				
+				try {
+					name = b.getConsumer().getFirstName()+" "+ b.getConsumer().getLastName();
+				} catch ( Exception  e) {
+					System.out.println();
+					System.out.println(ColorUI.RED_BOLD+"  xx> "+e.getMessage()+" <xx"+ColorUI.RESET);
+				}
+				
+				System.out.println();
+				System.out.println(ColorUI.BLUE_BOLD+"  ***Bill for "+ColorUI.RESET+ColorUI.YELLOW_BOLD+name+ColorUI.RESET+ColorUI.BLACK+" :- "+ColorUI.RESET);
+//				System.out.println();
+				
+				System.out.println(ColorUI.BLACK_BOLD+"  ConsumerId : "+b.getConsumer().getConsumerId());
+				System.out.println("  BillingId : "+b.getBillId());
+				System.out.println("  Previous Reading : "+b.getPrevReading());
+				System.out.println("  Current Reading : "+b.getCurrReading());
+				System.out.println("  Units Consumed : "+b.getUnitConsumed());
+				System.out.println("  Unit Rate : "+b.getUnitRate());
+				System.out.println("  Total Amount : "+b.getTotalAmount());
+				System.out.println("  tax : "+b.getTax());
+				System.out.println("  Bill Starting Date : "+b.getStartDate());
+				System.out.println("  Bill Ending Date : "+b.getEndDate());
+				System.out.println("  Billing Date : "+b.getBilling_date());
+				System.out.println("  Last Payment Date : "+b.getDueDate());
+				System.out.println("  Bill Payment Status : "+(b.getIsPaid() == 0 ? "Payment Is Pending" : "Payment Is Paid"+ColorUI.RESET));
+				
+			});
+		} catch (SomethingWentWrongException | NoRecordFoundException e) {
+			System.out.println();
+			System.out.println(ColorUI.RED_BOLD+"  xx> "+e.getMessage()+" <xx"+ColorUI.RESET);
+		} catch (Exception ex) {
+			System.out.println();
+			System.out.println(ColorUI.RED_BOLD+"  xx> "+ex.getMessage()+" <xx"+ColorUI.RESET);
+		}
+		System.out.println();
 		
     }
     
@@ -144,7 +300,22 @@ public class AdminUI {
     public static void deleteConsumerById(Scanner sc) {
     	System.out.print(ColorUI.BLUE_BOLD+"  Enter consumerId : "+ColorUI.RESET);
     	String consId=sc.next();
+    	System.out.println();
     	
+    	AdminDao aDao = new AdminDaoImpl();
+    	
+    	try {
+			aDao.deleteConsumerDataById(consId);
+			System.out.println();
+			System.out.println(ColorUI.GREEN_BOLD+"  ***Consumer with consumerId '"+consId+"' is deleted successfully***"+ColorUI.RESET);
+		} catch (SomethingWentWrongException | NoRecordFoundException e) {
+			System.out.println();
+			System.out.println(ColorUI.RED_BOLD+"  xx>"+e.getMessage()+"  <xx"+ColorUI.RESET);
+		} catch (Exception ex) {
+			System.out.println();
+			System.out.println(ColorUI.RED_BOLD+"  xx>"+ex.getMessage()+"  <xx"+ColorUI.RESET);
+		}
+    	System.out.println();
     	
     }
     
@@ -152,7 +323,54 @@ public class AdminUI {
     
     public static void generateConsumersBill(Scanner sc) {
     	
+    	System.out.print(ColorUI.BLUE_BOLD+"  Enter ConsumerId : "+ColorUI.RESET);
+    	int consId=sc.nextInt();
     	
+    	System.out.print(ColorUI.BLUE_BOLD+"  Enter Previous Reading : "+ColorUI.RESET);
+    	double prevRead=sc.nextDouble();
+    	
+    	System.out.print(ColorUI.BLUE_BOLD+"  Enter Current Reading : "+ColorUI.RESET);
+    	double currRead=sc.nextDouble();
+    	
+    	System.out.print(ColorUI.BLUE_BOLD+"  Enter Unit Rate : "+ColorUI.RESET);
+    	int unitRate=sc.nextInt();
+    	
+    	System.out.print(ColorUI.BLUE_BOLD+"  Enter Bill Tax : "+ColorUI.RESET);
+    	double tax=sc.nextDouble();
+    	
+    	double unitConsumed=Math.abs(currRead-prevRead);
+    	
+    	double totalAmt=(unitConsumed*unitRate)+((unitConsumed*unitRate)*(tax/100));
+    	
+    	System.out.print(ColorUI.BLUE_BOLD+"  Enter StratDate of Reading : "+ColorUI.RESET);
+    	LocalDate sDate=LocalDate.parse(sc.next());
+    	
+    	System.out.print(ColorUI.BLUE_BOLD+"  Enter EndDate of Reading : "+ColorUI.RESET);
+    	LocalDate eDate=LocalDate.parse(sc.next());
+    	
+    	LocalDate billingDate=LocalDate.now();
+    	
+    	LocalDate dueDate=billingDate.plusDays(10);
+    	
+    	int isPaid=0;
+    	
+    	Bill bill = new Bill(prevRead, currRead, unitConsumed, unitRate, totalAmt, tax, sDate, eDate, billingDate, dueDate, isPaid);
+    	
+    	AdminDao aDao = new AdminDaoImpl();
+    	
+    	try {
+			aDao.generateBillData(consId, bill);
+			System.out.println();
+        	System.out.println(ColorUI.GREEN_BOLD+"  ***Bill for ConsumerId "+consId+" is generated successfully***"+ColorUI.RESET);
+        
+		} catch (SomethingWentWrongException | NoRecordFoundException e) {
+			System.out.println();
+			System.out.println(ColorUI.RED_BOLD+"  xx> "+e.getMessage()+" <xx"+ColorUI.RESET);
+		} catch (Exception ex) {
+			System.out.println();
+			System.out.println(ColorUI.RED_BOLD+"  xx> "+ex.getMessage()+" <xx"+ColorUI.RESET);
+		}
+    	System.out.println();
     }
     
     
