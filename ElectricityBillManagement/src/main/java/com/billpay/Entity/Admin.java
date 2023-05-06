@@ -2,10 +2,9 @@ package com.billpay.Entity;
 
 
 
-public class Admin {
+public interface Admin {
 	
-	private String adminUserName;
-	private String adminEmail;
-	private String adminPassword;
+	static String username = "Admin";
+	static String password = "Admin";
 
 }
