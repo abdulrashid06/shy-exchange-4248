@@ -1,6 +1,7 @@
 package com.billpay.UI;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -12,14 +13,23 @@ import com.billpay.DAO.AdminDao;
 import com.billpay.DAO.AdminDaoImpl;
 import com.billpay.DAO.BillDao;
 import com.billpay.DAO.BillDaoImpl;
+import com.billpay.DAO.ComplaintDao;
+import com.billpay.DAO.ComplaintDaoImpl;
+import com.billpay.DAO.TransactionDao;
+import com.billpay.DAO.TransactionDaoImpl;
 import com.billpay.Entity.Admin;
 import com.billpay.Entity.Bill;
+import com.billpay.Entity.Complaint;
 import com.billpay.Entity.ConsumerSave;
+import com.billpay.Entity.Transaction;
+import com.billpay.Exception.InvalidInputException;
 import com.billpay.Exception.InvalidUsernameOrPasswordException;
 import com.billpay.Exception.NoRecordFoundException;
 import com.billpay.Exception.SomethingWentWrongException;
 import com.billpay.Service.BillService;
 import com.billpay.Service.BillServiceImpl;
+import com.billpay.Service.ComplaintService;
+import com.billpay.Service.ComplaintServiceImpl;
 import com.billpay.Service.ConsumerService;
 import com.billpay.Service.ConsumerServiceImpl;
 import com.billpay.colors.ColorUI;
@@ -63,6 +73,7 @@ public class AdminUI {
 			if(conList != null) {
 				
 				conList.forEach(c -> {
+					System.out.println();
 					System.out.println(ColorUI.PURPLE + "ConsumerId : "+c.getConsumerId() + "  |  FirstName : "+c.getFirstName() + "  |  LastName : "+c.getLastName() 
 					+ "  |  UserName : "+c.getUserName() + "  |  Email : "+c.getEmail() + "  |  Address : "+c.getAddress() + "  |  Mobile : "+c.getMobileNum()+ColorUI.RESET);
 				});
@@ -444,7 +455,84 @@ public class AdminUI {
 		
 	}
     
+    
+    
+public static int showAllPendingComplaints() {
+	
+	ComplaintService cService = new ComplaintServiceImpl();
+	
+	try {
+		
+		List<Complaint> compList = cService.showAllPendingComplaint();
+		
+		if(compList.size() > 0) {
+			
+		
+		
+		System.out.println();
+		System.out.println(ColorUI.BLUE_BOLD+"  ***All Pending Complaints are "+ColorUI.RESET+ColorUI.YELLOW_BOLD+ColorUI.RESET+" :- ");
+		System.out.println();
+		
+		compList.forEach(s->{
+			System.out.println();
+			System.out.println(ColorUI.TEAL+"  Consumer Id : "+s.getConsumer().getConsumerId());
+			System.out.println("  Complaint Id : "+s.getComplaintId());
+			System.out.println("  Complaint Date : "+s.getCompDate());
+			System.out.println("  Complaint Type : "+s.getCompTypa());
+			System.out.println("  Complaint Description : "+s.getCompDesc());
+			System.out.println("  Assigned to : "+s.getAssignedTo());
+			System.out.println("  Status : "+ColorUI.RESET +ColorUI.RED_BOLD + (s.getStatus()==0 ? "Pending" : ColorUI.RESET +ColorUI.GREEN_BOLD + "Resolved"+ColorUI.RESET));
+			
+		});
+		}
+		else {
+			System.out.println();
+			System.out.println(ColorUI.GREEN_BOLD+ "*** You have no pending complaints ***" + ColorUI.RESET);
+			System.out.println();
+		}
+
+		
+		return compList.size();
+	} catch (SomethingWentWrongException | NoRecordFoundException e) {
+		System.out.println();
+		System.out.println(ColorUI.RED_BOLD+"  xx> "+e.getMessage()+" <xx"+ColorUI.RESET);
+		System.out.println();
+	} catch (Exception e) {
+		System.out.println();
+		System.out.println(ColorUI.RED_BOLD+"  xx> "+e.getMessage()+" <xx"+ColorUI.RESET);
+		System.out.println();
+	}
+	return 0;
+	
+}
+    
+    
     public static void resolveComplaints(Scanner sc) {
+    	
+    	ComplaintDao cDao = new ComplaintDaoImpl();
+    	
+    	try {
+    		if(showAllPendingComplaints() > 0) {
+    		
+    		System.out.print(ColorUI.YELLOW_BOLD+"  Enter Complaint Id from above which you have to resolve : "+ColorUI.RESET);
+    		int compId=sc.nextInt();
+    		System.out.println();
+    		
+    		cDao.resolveComplaint(compId);
+    		
+    		System.out.println();
+    		System.out.println(ColorUI.GREEN_BOLD+"  ***Payment Successfull!***"+ColorUI.RESET);
+    		System.out.println();
+    		}
+    	} catch (SomethingWentWrongException |NoRecordFoundException  e) {
+    		System.out.println();
+    		System.out.println(ColorUI.RED_BOLD+"  xx> "+e.getMessage()+" <xx"+ColorUI.RESET);
+    		System.out.println();
+    	}catch (Exception e) {
+    		System.out.println();
+    		System.out.println(ColorUI.RED_BOLD+"  xx> "+e.getMessage()+" <xx"+ColorUI.RESET);
+    		System.out.println();
+    	}
     	
     
     }

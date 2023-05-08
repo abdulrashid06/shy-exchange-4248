@@ -19,11 +19,70 @@ public class ConsumerDaoImpl implements ConsumerDao{
 	public ConsumerSave consumerLoginData(String uName, String pass)
 			throws SomethingWentWrongException, InvalidUsernameOrPasswordException {
 		
+		EntityManager em = EMFUtils.getAnEntityManager();
+		ConsumerSave consumer = null;
 		
+//		int conId = getIdByName(uName);
 		
-		return null;
+		try {
+//			consumer = em.find(ConsumerSave.class, conId);
+			
+            try {
+            	Query query = em.createQuery("SELECT c FROM ConsumerSave c WHERE c.userName= :uName AND c.password= :pass");
+                query.setParameter("uName", uName);
+                query.setParameter("pass", pass);
+                consumer = (ConsumerSave) query.getSingleResult();
+			} catch (Exception e) {
+				throw new InvalidUsernameOrPasswordException("Invalid username or password!");
+			}
+			
+			
+			if(consumer == null) {
+				throw new InvalidUsernameOrPasswordException("Invalid username or password!");
+			}
+			
+            
+		} catch (IllegalArgumentException e) {
+			throw new SomethingWentWrongException("Unbale to fetch data, please try again");
+		}finally {
+			em.close();
+		}
+		
+		return consumer;
 	}
 
+	
+	
+	public int getIdByName(String name)throws SomethingWentWrongException, InvalidUsernameOrPasswordException {
+		
+		EntityManager em = EMFUtils.getAnEntityManager();
+		int conId = 0;
+		
+		try {
+			try {
+				Query query = em.createQuery("SELECT c.consumerId FROM ConsumerSave c WHERE c.userName= :name");
+				query.setParameter("name", name);
+				conId = (int) query.getSingleResult();
+			} catch (Exception e) {
+				throw new InvalidUsernameOrPasswordException("Invalid username or password!");
+			}
+			
+			
+			if(conId == 0) {
+				throw new InvalidUsernameOrPasswordException("Invalid username or password!");
+			}
+			
+		} catch (IllegalArgumentException e) {
+			throw new SomethingWentWrongException("Unable to fetch data, please try again");
+		}finally {
+			em.close();
+		}
+		
+		return conId;
+		
+	}
+	
+	
 	
 	
 	@Override
@@ -78,9 +137,10 @@ public class ConsumerDaoImpl implements ConsumerDao{
 	
 	
 	@Override
-	public void payConsumerBill(String BillId) throws SomethingWentWrongException, NoRecordFoundException {
+	public void payConsumerBill(int BillId) throws SomethingWentWrongException, NoRecordFoundException {
 		
 		EntityManager em = EMFUtils.getAnEntityManager();
+		EntityTransaction et = em.getTransaction();
 		Bill bill = null;
 		
 		try {
@@ -90,6 +150,10 @@ public class ConsumerDaoImpl implements ConsumerDao{
 			}
 			
 			bill.setIsPaid(1);
+			
+			et.begin();
+			em.merge(bill);
+			et.commit();
 			
 		} catch (IllegalArgumentException e) {
 			throw new SomethingWentWrongException("Unable to fetch data, please try again");
@@ -183,5 +247,33 @@ public class ConsumerDaoImpl implements ConsumerDao{
 		}
 		
 		return false;
+	}
+
+
+
+	@Override
+	public List<Bill> showAllPendingBillsData(int consId)
+			throws SomethingWentWrongException, NoRecordFoundException {
+		
+		EntityManager em = EMFUtils.getAnEntityManager();
+		List<Bill> bill = null;
+		
+		try {
+			
+			Query query = em.createQuery("SELECT c.billList FROM ConsumerSave c WHERE c.consumerId= :consId");
+			query.setParameter("consId", consId);
+			bill = query.getResultList();
+			
+			if(bill == null) {
+				throw new NoRecordFoundException("No record found in database");
+			}
+			
+		} catch (IllegalArgumentException e) {
+			throw new SomethingWentWrongException("Unable to fetch data, please try again");
+		}finally {
+			em.close();
+		}
+		
+		return bill;
 	}
 }

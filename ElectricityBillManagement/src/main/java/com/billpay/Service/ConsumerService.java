@@ -2,6 +2,7 @@ package com.billpay.Service;
 
 import java.util.List;
 
+import com.billpay.Entity.Bill;
 import com.billpay.Entity.ConsumerSave;
 import com.billpay.Exception.InvalidUsernameOrPasswordException;
 import com.billpay.Exception.NoRecordFoundException;
@@ -18,9 +19,9 @@ public interface ConsumerService {
 	
 	public List<ConsumerSave> viewAllConsumerData() throws SomethingWentWrongException, NoRecordFoundException; 
 	
-//	public List<Bill> showAllPendingBillsData(String consId)throws SomethingWentWrongException,NoRecordFoundException; 
+	public List<Bill> showAllPendingBillsData(int consId)throws SomethingWentWrongException,NoRecordFoundException; 
 	
-	public void payConsumerBill(String BillId) throws SomethingWentWrongException;
+	public void payConsumerBill(int BillId) throws SomethingWentWrongException;
 	
 //	public boolean verifySecurityCredentials(String opass, String consId)throws SomethingWentWrongException, InvalidUsernameOrPasswordException;
 	

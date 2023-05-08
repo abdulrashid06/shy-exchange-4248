@@ -1,9 +1,13 @@
 package com.billpay.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import com.billpay.DAO.ConsumerDao;
 import com.billpay.DAO.ConsumerDaoImpl;
+import com.billpay.Entity.Bill;
 import com.billpay.Entity.ConsumerSave;
 import com.billpay.Exception.InvalidUsernameOrPasswordException;
 import com.billpay.Exception.NoRecordFoundException;
@@ -14,9 +18,19 @@ public class ConsumerServiceImpl implements ConsumerService {
 	@Override
 	public ConsumerSave consumerLoginData(String uName, String pass)
 			throws SomethingWentWrongException, InvalidUsernameOrPasswordException {
-				return null;
-		// TODO Auto-generated method stub
 		
+		ConsumerDao cDao = new ConsumerDaoImpl();
+		ConsumerSave consumer = null;
+		
+		try {
+			consumer = cDao.consumerLoginData(uName, pass);
+			
+		} catch (IllegalArgumentException e) {
+			throw new SomethingWentWrongException("Unable to fetch data, please try again");
+		}
+		
+		
+		return consumer;
 	}
 
 	
@@ -56,7 +70,7 @@ public class ConsumerServiceImpl implements ConsumerService {
 	
 	
 	@Override
-	public void payConsumerBill(String BillId) throws SomethingWentWrongException {
+	public void payConsumerBill(int BillId) throws SomethingWentWrongException {
 		
 		ConsumerDao cDao = new ConsumerDaoImpl();
 		try {
@@ -105,6 +119,35 @@ public class ConsumerServiceImpl implements ConsumerService {
 		}
 		
 		return list;
+	}
+
+
+
+
+	@Override
+	public List<Bill> showAllPendingBillsData(int consId)
+			throws SomethingWentWrongException, NoRecordFoundException {
+		
+		ConsumerDao cDao = new ConsumerDaoImpl();
+		List<Bill> billList = new ArrayList<>();
+		
+		List<Bill> bill;
+		
+		try {
+			billList = cDao.showAllPendingBillsData(consId);
+			if(billList == null) {
+				throw new NoRecordFoundException("No record found in database");
+			}
+			
+		     bill = (List<Bill>) billList.stream().filter(b -> b.getIsPaid()==0).collect(Collectors.toList());
+			
+		} catch (IllegalArgumentException e) {
+			throw new SomethingWentWrongException("Unable to fetch data, please try again");
+		}
+		
+//		System.out.println(billList);
+		
+		return bill;
 	}
 
 

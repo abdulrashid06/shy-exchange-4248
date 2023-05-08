@@ -1,7 +1,9 @@
 package com.billpay.Entity;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,8 +19,13 @@ public class Transaction {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int TransactionId;
 	
+	@Column(name = "amountPaid", nullable = false)
 	private double amountPaid;
-	private LocalDate paymentDate;
+	
+	@Column(name = "paymentDate", nullable = false)
+	private LocalDateTime paymentDate;
+	
+	@Column(name = "paymentMethod", nullable = false)
 	private String paymentMethod;
 	
 	@ManyToOne
@@ -30,13 +37,22 @@ public class Transaction {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Transaction(double amountPaid, LocalDate paymentDate, String paymentMethod, ConsumerSave consumer) {
+	public Transaction(double amountPaid, LocalDateTime paymentDate, String paymentMethod, ConsumerSave consumer) {
 		super();
 		this.amountPaid = amountPaid;
 		this.paymentDate = paymentDate;
 		this.paymentMethod = paymentMethod;
 		this.consumer = consumer;
 	}
+	
+	public Transaction(double amountPaid, LocalDateTime paymentDate, String paymentMethod) {
+		super();
+		this.amountPaid = amountPaid;
+		this.paymentDate = paymentDate;
+		this.paymentMethod = paymentMethod;
+	}
+	
+	
 
 	public int getTransactionId() {
 		return TransactionId;
@@ -54,11 +70,11 @@ public class Transaction {
 		this.amountPaid = amountPaid;
 	}
 
-	public LocalDate getPaymentDate() {
+	public LocalDateTime getPaymentDate() {
 		return paymentDate;
 	}
 
-	public void setPaymentDate(LocalDate paymentDate) {
+	public void setPaymentDate(LocalDateTime paymentDate) {
 		this.paymentDate = paymentDate;
 	}
 

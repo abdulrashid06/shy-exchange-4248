@@ -2,6 +2,7 @@ package com.billpay.Entity;
 
 import java.time.LocalDate;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,20 +19,41 @@ public class Bill {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int billId;
 	
+	@Column(name = "prevReading", nullable = false)
 	private double prevReading;
+	
+	@Column(name = "currReading", nullable = false)
 	private double currReading;
+	
+	@Column(name = "unitConsumed", nullable = false)
 	private double unitConsumed;
+	
+	@Column(name = "unitRate", nullable = false)
 	private int unitRate;
+	
+	@Column(name = "totalAmount", nullable = false)
 	private double totalAmount;
+	
+	@Column(name = "tax", nullable = false)
 	private double tax;
+	
+	@Column(name = "startDate", nullable = false)
 	private LocalDate startDate;
+	
+	@Column(name = "endDate", nullable = false)
 	private LocalDate endDate;
+	
+	@Column(name = "billing_date", nullable = false)
 	private LocalDate billing_date;
+	
+	@Column(name = "dueDate", nullable = false)
 	private LocalDate dueDate;
+	
+	@Column(name = "isPaid", nullable = false)
 	private int isPaid;
 	
 	@ManyToOne
-//    @JoinColumn(name = "consumer_id")
+    @JoinColumn(name = "consumer_id")
 	private ConsumerSave consumer;
 
 	public Bill() {

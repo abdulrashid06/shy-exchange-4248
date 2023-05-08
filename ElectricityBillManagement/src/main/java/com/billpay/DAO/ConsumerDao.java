@@ -2,6 +2,7 @@ package com.billpay.DAO;
 
 import java.util.List;
 
+import com.billpay.Entity.Bill;
 import com.billpay.Entity.ConsumerSave;
 import com.billpay.Exception.InvalidUsernameOrPasswordException;
 import com.billpay.Exception.NoRecordFoundException;
@@ -18,12 +19,14 @@ public interface ConsumerDao {
 	
 	public List<ConsumerSave> viewAllConsumerData() throws SomethingWentWrongException, NoRecordFoundException; 
 	
-//	public List<Bill> showAllPendingBillsData(String consId)throws SomethingWentWrongException,NoRecordFoundException; 
+	public List<Bill> showAllPendingBillsData(int consId)throws SomethingWentWrongException,NoRecordFoundException; 
 	
-	public void payConsumerBill(String BillId) throws SomethingWentWrongException, NoRecordFoundException;
+	public void payConsumerBill(int BillId) throws SomethingWentWrongException, NoRecordFoundException;
 	
 	public boolean verifySecurityCredentials(String opass, String consId)throws SomethingWentWrongException, InvalidUsernameOrPasswordException, NoRecordFoundException;
 	
 	public void updatePassword(String pass, String consId)throws SomethingWentWrongException, NoRecordFoundException;
+	
+	public int getIdByName(String name)throws SomethingWentWrongException, InvalidUsernameOrPasswordException;
 
 }
