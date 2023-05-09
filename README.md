@@ -1,7 +1,7 @@
 # -wretched-room-300
 
-<h1 align="center" >PAYTRIC :- Electricity Bill Payment System</h1>
-<div align="center"><img src="https://user-images.githubusercontent.com/111189783/229363684-8baaed53-fe42-4ddd-b465-ef6185ffc41f.png"></div>
+<h1 align="center" >BILLPAY :- Electricity Bill Payment System</h1>
+<div align="center"><img src="https://drive.google.com/file/d/1BEAu-snuPc6RUg45_hQO-cAEwicxc4Xe/view?usp=share_link"></div>
 
 
 ## Introduction
