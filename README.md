@@ -1,8 +1,8 @@
 # -wretched-room-300
 
 <h1 align="center" >BILLPAY :- Electricity Bill Payment System</h1>
-<!-- <div align="center"><img src="![BillPay](https://github.com/abdulrashid06/shy-exchange-4248/assets/115461514/43ac6db6-a630-424e-af13-b2e5d886e0fd"></div> -->
-![BillPay](https://github.com/abdulrashid06/shy-exchange-4248/assets/115461514/c279eb49-98fb-4ce6-b43e-e3ec5e92bf36)
+<!-- <div align="center"><img src="https://github.com/abdulrashid06/shy-exchange-4248/assets/115461514/43ac6db6-a630-424e-af13-b2e5d886e0fd"></div> -->
+<!-- ![BillPay](https://github.com/abdulrashid06/shy-exchange-4248/assets/115461514/c279eb49-98fb-4ce6-b43e-e3ec5e92bf36) -->
 
 
 ## Introduction
