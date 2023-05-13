@@ -114,6 +114,6 @@ Your valuable feedback is really appreciated. You can reach out to me via below 
 
 - [abdulrashid06](https://github.com/abdulrashid06)
 
-## Acknowledgements
+<!-- ## Acknowledgements
 
-- [Masai School](https://www.masaischool.com/)
+- [Masai School](https://www.masaischool.com/) -->
