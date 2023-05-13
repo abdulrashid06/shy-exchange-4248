@@ -10,7 +10,15 @@
 <p>BILLPAY :- Electricity Bill Payment System (EBPS) is a software which is used to provide a payment service to consumers so that they pay all their pending bills comfortably from home.</p>
 <p>With the help of this software user can pay the bill, can see his all transactions, can also file complaints regarding the issues he is facing.</p>
 <br>
-## Note :- <p> The username and password for Admin is hard-coded i.e(username=Admin, password=Admin) <p>
+
+
+## Note :-
+
+<p>The username and password for Admin is hard-coded i.e(username=Admin, password=Admin)</p>
+<!-- <p>With the help of this software user can pay the bill, can see his all transactions, can also file complaints regarding the issues he is facing.</p> -->
+<br>
+
+
 ## Key Features
 
 <h4>Admin<h4>
