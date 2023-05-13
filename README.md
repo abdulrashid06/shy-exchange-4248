@@ -70,7 +70,7 @@
 - MySQL
 - Hibernate
 - STS
-- Git
+- Maven
 - Github
 
 <br>
