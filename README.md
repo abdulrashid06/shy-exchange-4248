@@ -95,7 +95,8 @@
 
 ## ER Diagram
     
-![ER-Diagram](https://user-images.githubusercontent.com/111189783/229363814-3af95128-cce3-40d5-a057-b9b3f6988bae.png)
+
+![229363814-3af95128-cce3-40d5-a057-b9b3f6988bae](https://github.com/abdulrashid06/shy-exchange-4248/assets/115461514/df46f106-bf4d-4e0e-ae98-1e4d403aaf93)
 
 <br>
         
